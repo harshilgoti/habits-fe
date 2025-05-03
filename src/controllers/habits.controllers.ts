@@ -82,6 +82,10 @@ const habitStatus = asyncHandler(
       createdAt: { $gte: startOfDay, $lte: endOfDay },
     });
 
+    if (!habit) {
+      throw new Error("Habit not found");
+    }
+
     return res
       .status(201)
       .json(new ApiResponse(200, habit, "Habit status fetched successfully"));
