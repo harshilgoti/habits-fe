@@ -3,6 +3,7 @@ import { ErrorResponse } from "../utils/ErrorResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/AppResponse";
 import { Habit } from "../models/habits.models";
+import { Schema } from "mongoose";
 
 const createHabit = asyncHandler(
   async (req: Request & { user: any }, res: Response, next: NextFunction) => {
@@ -77,15 +78,13 @@ const habitStatus = asyncHandler(
     endOfDay.setUTCHours(23, 59, 59, 999);
 
     const habit = await Habit.find({
-      createdBy: id,
+      _id: id,
       createdAt: { $gte: startOfDay, $lte: endOfDay },
     });
 
-    console.log("habit", habit);
-
     return res
       .status(201)
-      .json(new ApiResponse(200, habits, "Habit fetched successfully"));
+      .json(new ApiResponse(200, habit, "Habit status fetched successfully"));
   }
 );
 
