@@ -36,7 +36,7 @@ const register = asyncHandler(
   }
 );
 
-const generateToken = async (userId: mongoose.Types.ObjectId) => {
+export const generateToken = async (userId: mongoose.Types.ObjectId) => {
   try {
     const user = await User.findById({ _id: userId });
 
