@@ -14,10 +14,6 @@ const userSchema = new mongoose.Schema<IHabit>(
       type: String,
       required: true,
     },
-    isCompleted: {
-      type: Boolean,
-      default: false,
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

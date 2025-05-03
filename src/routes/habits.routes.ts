@@ -2,16 +2,26 @@ import express from "express";
 import {
   createHabit,
   habits,
+  markHabitComplete,
+  unmarkHabitComplete,
   habitStatus,
-  isCompleteHabit,
+  habitStreak,
+  monthlyCompletions,
 } from "../controllers/habits.controllers";
 import { verifyJWT } from "../middlewares/auth.middleware";
 
-const habitsRouter = express.Router();
+const router = express.Router();
 
-habitsRouter.route("/").get(verifyJWT, habits); // get all habits
-habitsRouter.route("/status/:id").get(verifyJWT, habitStatus); // get habit status
-habitsRouter.route("/").post(verifyJWT, createHabit); // create route
-habitsRouter.route("/:id").patch(verifyJWT, isCompleteHabit);
+router.use(verifyJWT);
 
-export default habitsRouter;
+router.get("/", habits);
+
+router.post("/", createHabit);
+
+router.post("/:id/complete", markHabitComplete);
+router.post("/:id/uncomplete", unmarkHabitComplete);
+router.get("/:id/status", habitStatus);
+router.get("/:id/streak", habitStreak);
+router.get("/:id/monthly", monthlyCompletions);
+
+export default router;
