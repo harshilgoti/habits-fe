@@ -4,6 +4,7 @@ import { ErrorResponse } from "../utils/ErrorResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/AppResponse";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const register = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -35,7 +36,7 @@ const register = asyncHandler(
   }
 );
 
-const generateToken: any = async (userId: any) => {
+const generateToken = async (userId: mongoose.Types.ObjectId) => {
   try {
     const user = await User.findById({ _id: userId });
 
@@ -100,7 +101,10 @@ const login = asyncHandler(
 );
 
 const logOut = asyncHandler(
-  async (req: any, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || !req?.user?._id) {
+      throw new Error("unauthorized ");
+    }
     const { _id } = req.user;
 
     const user = await User.findByIdAndUpdate(
@@ -179,29 +183,18 @@ const refreshToken = asyncHandler(
   }
 );
 
-const changePassword = asyncHandler(
-  async (req: any, res: Response, next: NextFunction) => {
-    const { oldPassword, newPassword } = req.body;
-
-    const user = await User.findById(req?.user?._id);
+const getUserById = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
 
     if (!user) {
       throw new Error("User not found");
     }
 
-    const isCorrectPassword = await user?.isPasswordCorrect(oldPassword);
-
-    if (!isCorrectPassword) {
-      throw new Error("Invalid old password");
-    }
-
-    user.password = newPassword;
-    await user.save({ validateBeforeSave: false });
-
     return res
       .status(200)
-      .json(new ApiResponse(200, {}, "Password change successfully"));
+      .json(new ApiResponse(200, user, "User fetched successfully"));
   }
 );
 
-export { register, login, logOut, refreshToken, changePassword };
+export { getUserById, login, logOut, refreshToken, register };

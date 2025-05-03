@@ -1,15 +1,16 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-interface IUser extends Document {
+export interface IUser extends Document {
+  _id: Types.ObjectId;
   fullName: string;
   email: string;
   password: string;
   refreshToken?: string;
   isPasswordCorrect(password: string): Promise<boolean>;
-  generateAccessToken: () => any;
-  refreshAccessToken: () => any;
+  generateAccessToken(): string;
+  refreshAccessToken(): string;
 }
 
 export interface IUserModel extends Model<IUser> {}
