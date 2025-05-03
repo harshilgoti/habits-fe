@@ -88,8 +88,10 @@ const login = asyncHandler(
     );
 
     const options = {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: true,
+      sameSite: "none" as const,
     };
 
     return res
@@ -124,8 +126,10 @@ const logOut = asyncHandler(
     }
 
     const options = {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: true,
+      sameSite: "none" as const,
     };
 
     return res
